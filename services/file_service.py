@@ -5,6 +5,7 @@ from pathlib import Path
 from datetime import datetime
 from fastapi import UploadFile
 from models.schemas import DatabaseFile
+from langchain_community.utilities import SQLDatabase
 
 class FileService:
     def __init__(self):
@@ -68,6 +69,10 @@ class FileService:
             file_path=str(file_path)
         )
     
+    def initialize_db(database_file: DatabaseFile):
+        db = SQLDatabase.from_uri(f"sqlite:////{database_file.file_path}")
+        return db
+    
     def _is_valid_sqlite(self, file_path):
         """check if file is a valid SQLite database"""
         try:
@@ -77,5 +82,3 @@ class FileService:
             return True
         except Exception:
             return False
-        
-        
