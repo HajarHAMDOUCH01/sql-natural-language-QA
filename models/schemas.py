@@ -12,11 +12,11 @@ class State(TypedDict):
 class APIKeys(BaseModel):
     """User's API keys"""
     gemini_api_key: str
-    langchain_api_key: Optional[str] = None  # Make optional
+    langchain_api_key: str
 
 class DatabaseFile(BaseModel):
     """Model representing an uploaded database file"""
-    filename: str
+    file_name: str
     session_id: str
     file_size: int
     upload_timestamp: datetime
@@ -35,6 +35,7 @@ class UploadResponse(BaseModel):
     filename: str
     message: str
     file_info: DatabaseFile
+
 
 class QueryRequest(BaseModel):
     """Natural language query request"""

@@ -51,26 +51,30 @@ class FileService:
         
         if filename:
             file_path = session_folder / filename
+            actual_filename = filename
         else:
             db_files = list(session_folder.glob("*.db"))
             if not db_files:
-                raise FileNotFoundError(f"No databse files found in session {session_id}")
+                raise FileNotFoundError(f"No database files found in session {session_id}")
             file_path = db_files[0]
+            actual_filename = file_path.name  # ✅ Récupère le nom du fichier trouvé
+            
         if not file_path.exists():
             raise FileNotFoundError(f"Database file not found: {file_path}")
         
         stat = file_path.stat()
 
         return DatabaseFile(
-            filename=filename,
+            file_name=actual_filename,  # ✅ Utilise le nom réel du fichier
             session_id=session_id,
             file_size = stat.st_size,
             upload_timestamp=datetime.fromtimestamp(stat.st_mtime),
             file_path=str(file_path)
         )
     
+    @staticmethod
     def initialize_db(database_file: DatabaseFile):
-        db = SQLDatabase.from_uri(f"sqlite:////{database_file.file_path}")
+        db = SQLDatabase.from_uri(f"sqlite:///{database_file.file_path}")
         return db
     
     def _is_valid_sqlite(self, file_path):

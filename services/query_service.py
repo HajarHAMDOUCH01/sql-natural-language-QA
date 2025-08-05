@@ -6,8 +6,8 @@ from langchain.chat_models import init_chat_model
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_community.tools.sql_database.tool import QuerySQLDatabaseTool
 from models.schemas import (
-    QueryResponse, 
-    Query, 
+    QueryOutput, 
+    SQLQuery, 
     QueryResult, 
     GeneratedAnswer, 
     APIKeys,
@@ -105,10 +105,10 @@ class QueryService:
                 "input": question
             })
             
-            structured_llm = llm.with_structured_output(QueryResponse)
+            structured_llm = llm.with_structured_output(QueryOutput)
             result = structured_llm.invoke(prompt)
             
-            return result.query
+            return result["query"]
             
         except Exception as e:
             raise Exception(f"Error generating SQL query: {str(e)}")
@@ -152,7 +152,7 @@ class QueryService:
         question: str, 
         db: SQLDatabase, 
         api_keys: APIKeys
-    ) -> Query:
+    ) -> SQLQuery:
         """Generate only SQL query (for testing or separate usage)"""
         try:
             os.environ["GOOGLE_API_KEY"] = api_keys.gemini_api_key
@@ -188,10 +188,10 @@ class QueryService:
                 "input": question
             })
             
-            structured_llm = llm.with_structured_output(QueryResponse)
+            structured_llm = llm.with_structured_output(QueryOutput)
             result = structured_llm.invoke(prompt)
             
-            return Query(
+            return SQLQuery(
                 session_id="", # Will be set by caller
                 query=result
             )

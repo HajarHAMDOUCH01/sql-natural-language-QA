@@ -5,9 +5,10 @@ python-multipart
 pydantic 
 pydantic-settings
 langchain 
+langchain-google-genai
+google-generativeai
 langchain-core
 langchain-community
-langchain-google-genai
 langgraph
 google-ai-generativelanguage==0.6.15
 langchain[google-genai]
